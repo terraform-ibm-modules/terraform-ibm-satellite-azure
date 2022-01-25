@@ -1,7 +1,7 @@
 #####################################################
-# Module_Name_Here
-# Copyright 2020 IBM
-#####################################################
+# IBM Cloud Satellite -  Azure
+# Copyright 2022 IBM
+#####################################################> A$M
 
 /***************************************************
 NOTE: To source a particular version of IBM terraform provider, configure the parameter `version` as follows
@@ -20,6 +20,9 @@ If we dont configure the version parameter, it fetches the latest provider versi
 terraform {
   required_version = ">=0.13"
   required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+    }
     ibm = {
       source = "IBM-Cloud/ibm"
     }
