@@ -1,4 +1,8 @@
 #####################################################
-# Module Example
-# Copyright 2020 IBM
+# IBM Cloud Satellite -  Azure
+# Copyright 2022 IBM
 #####################################################
+
+locals {
+  zones = [1, 2, 3]
+}

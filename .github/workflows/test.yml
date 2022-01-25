@@ -39,10 +39,24 @@ jobs:
         name: setup terraform
         uses: hashicorp/setup-terraform@v1  # sets up Terraform CLI in your GitHub Actions workflow
         with:
-          terraform_version: 0.13.0
+          terraform_version: 0.13.1
 
       - name: Run Test
         working-directory: test
-        run: go test -v ./...
+        run: go test -v -timeout 250m ./...
         env:
-          IC_API_KEY: ${{ secrets.ACCESS_KEY }}
+          TF_VAR_ibmcloud_api_key: ${{ secrets.ibmcloud_api_key }}
+        env:
+          TF_VAR_az_subscription_id: ${{ secrets.az_subscription_id }}
+        env:
+          TF_VAR_az_client_id: ${{ secrets.az_client_id }}
+        env:
+          TF_VAR_az_client_secret: ${{ secrets.az_client_secret }}
+      - uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author_name: Integration Test # default: 8398a7@action-slack
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # optional
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.

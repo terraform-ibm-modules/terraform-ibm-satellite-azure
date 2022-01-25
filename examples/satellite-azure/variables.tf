@@ -1,11 +1,46 @@
+#####################################################
+# IBM Cloud Satellite -  Azure
+# Copyright 2022 IBM
+#####################################################
+
 # ##################################################
 # # Azure and IBM Authentication Variables
 # ##################################################
 
+variable "TF_VERSION" {
+  description = "terraform version"
+  type        = string
+  default     = "0.13"
+}
+
+variable "ibmcloud_api_key" {
+  description = "IBM Cloud API Key"
+  type        = string
+}
+
 variable "ibm_resource_group" {
   description = "Resource group name of the IBM Cloud account."
   type        = string
-  default     = "default"
+}
+
+variable "az_subscription_id" {
+  type        = string
+  description = "Subscription id of Azure Account"
+}
+
+variable "az_client_id" {
+  type        = string
+  description = "Client id of Azure Account"
+}
+
+variable "az_tenant_id" {
+  type        = string
+  description = "Tenent id of Azure Account"
+}
+
+variable "az_client_secret" {
+  type        = string
+  description = "Client Secret of Azure Account"
 }
 
 variable "az_resource_group" {
@@ -40,6 +75,18 @@ variable "ssh_public_key" {
   description = "SSH Public Key. Get your ssh key by running `ssh-key-gen` command"
   type        = string
   default     = null
+}
+
+variable "location_instance_type" {
+  description = "The type of azure instance to create"
+  type        = string
+  default     = "Standard_D4s_v3"
+}
+
+variable "cluster_instance_type" {
+  description = "The type of azure instance to create"
+  type        = string
+  default     = "Standard_D4s_v3"
 }
 
 variable "satellite_host_count" {
@@ -118,82 +165,6 @@ variable "azure_vnet_subnet_prefixes" {
   default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 }
 
-variable "az_cp_vm_os_disk" {
-  description = "Azure control plane vm os disk"
-  type = object({
-    caching              = string
-    storage_account_type = string
-    disk_size_gb         = number
-  })
-
-  default = {
-    caching              = "ReadWrite"
-    storage_account_type = "Premium_LRS"
-    disk_size_gb         = 128
-  }
-}
-
-variable "az_cp_vm_source_image_reference" {
-  description = "Azure control plane vm source image reference"
-  type = object({
-    publisher = string
-    offer     = string
-    sku       = string
-    version   = string
-  })
-
-  default = {
-    publisher = "RedHat"
-    offer     = "RHEL"
-    sku       = "7-LVM"
-    version   = "latest"
-  }
-}
-
-variable "az_cluster_vm_os_disk" {
-  description = "Azure cluster vm os disk"
-  type = object({
-    caching              = string
-    storage_account_type = string
-    disk_size_gb         = number
-  })
-
-  default = {
-    caching              = "ReadWrite"
-    storage_account_type = "Premium_LRS"
-    disk_size_gb         = 128
-  }
-}
-
-variable "az_cluster_vm_source_image_reference" {
-  description = "Azure host source image reference"
-  type = object({
-    publisher = string
-    offer     = string
-    sku       = string
-    version   = string
-  })
-
-  default = {
-    publisher = "RedHat"
-    offer     = "RHEL"
-    sku       = "7-LVM"
-    version   = "latest"
-  }
-}
-
-variable "location_instance_type" {
-  description = "The type of azure instance to create"
-  type        = string
-  default     = "Standard_D4s_v3"
-}
-
-variable "cluster_instance_type" {
-  description = "The type of azure instance to create"
-  type        = string
-  default     = "Standard_D4s_v3"
-}
-
 # ##################################################
 # # IBMCLOUD Satellite Location Variables
 # ##################################################
@@ -264,6 +235,7 @@ variable "cluster" {
 
 variable "kube_version" {
   description = "Satellite Kube Version"
+  default     = "4.7_openshift"
 }
 
 variable "cluster_host_labels" {
