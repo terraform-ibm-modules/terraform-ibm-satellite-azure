@@ -3,15 +3,13 @@
 # Copyright 2022 IBM
 #####################################################
 
-provider "azurerm" {
-  features {}
-}
-
 ###################################################################
 # Create satellite location
 ###################################################################
 module "satellite-location" {
-  source            = "terraform-ibm-modules/satellite/ibm//modules/location"
+  source  = "terraform-ibm-modules/satellite/ibm//modules/location"
+  version = "1.1.9"
+
   is_location_exist = var.is_location_exist
   location          = var.location
   managed_from      = var.managed_from
@@ -39,7 +37,9 @@ data "azurerm_resource_group" "resource_group" {
 # Create security group and security group rules
 ###################################################################
 module "azurerm-network-security-group" {
-  source                = "Azure/network-security-group/azurerm"
+  source  = "Azure/network-security-group/azurerm"
+  version = "3.6.0"
+
   resource_group_name   = data.azurerm_resource_group.resource_group.name
   location              = data.azurerm_resource_group.resource_group.location # Optional; if not provided, will use Resource Group location
   security_group_name   = "${var.az_resource_prefix}-sg"
@@ -56,8 +56,11 @@ module "azurerm-network-security-group" {
 # Create vpc, subnets and attach security group to subnet
 ###################################################################
 module "azurerm-vnet" {
-  depends_on          = [data.azurerm_resource_group.resource_group]
-  source              = "Azure/vnet/azurerm"
+  source  = "Azure/vnet/azurerm"
+  version = "2.6.0"
+
+  depends_on = [data.azurerm_resource_group.resource_group]
+
   resource_group_name = data.azurerm_resource_group.resource_group.name
   vnet_name           = "${var.az_resource_prefix}-vpc"
   address_space       = var.azure_vnet_address_space
@@ -225,7 +228,9 @@ resource "azurerm_virtual_machine_data_disk_attachment" "cluster_disk_attach" {
 # Assign host to satellite location control plane
 ###################################################################
 module "satellite-host" {
-  source         = "terraform-ibm-modules/satellite/ibm//modules/host"
+  source  = "terraform-ibm-modules/satellite/ibm//modules/host"
+  version = "1.1.9"
+
   host_count     = var.satellite_host_count
   location       = module.satellite-location.location_id
   host_vms       = azurerm_linux_virtual_machine.az_host_control_plane.*.name
@@ -240,7 +245,8 @@ module "satellite-host" {
 # Create satellite ROKS cluster
 ###################################################################
 module "satellite-cluster" {
-  source = "terraform-ibm-modules/satellite/ibm//modules/cluster"
+  source  = "terraform-ibm-modules/satellite/ibm//modules/cluster"
+  version = "1.1.9"
 
   create_cluster             = var.create_cluster
   cluster                    = var.cluster
@@ -263,7 +269,8 @@ module "satellite-cluster" {
 # Create worker pool on existing ROKS cluster
 ###################################################################
 module "satellite-cluster-worker-pool" {
-  source = "terraform-ibm-modules/satellite/ibm//modules/configure-cluster-worker-pool"
+  source  = "terraform-ibm-modules/satellite/ibm//modules/configure-cluster-worker-pool"
+  version = "1.1.9"
 
   create_cluster_worker_pool = var.create_cluster_worker_pool
   worker_pool_name           = var.worker_pool_name
